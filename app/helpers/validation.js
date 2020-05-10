@@ -1,52 +1,30 @@
 require('dotenv').config();
+
 const jwt = require('jsonwebtoken');
 
-const { SECRET } = process.env;
+const { JWT_SECRET, JWT_EXPIRATION_SECONDS, JWT_ALGORITHM } = process.env;
 
-const isValidEmail = (email) => {
-  const regEx = /\S+@\S+\.\S+/;
-  return regEx.test(email);
-};
+const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
-const validatePassword = (password) => {
-  if (password.length <= 5 || password === '') {
-    return false;
-  }
-  return true;
-};
+const validatePassword = (password) =>
+  !(password.length <= 5) || !(password === '');
 
-const isEmpty = (input) => {
-  if (input === undefined || input === '') {
-    return true;
-  }
-  if (input.replace(/\s/g, '').length) {
-    return false;
-  }
-  return true;
-};
+const isEmpty = (input) =>
+  input === undefined || input === '' || !input.replace(/\s/g, '').length;
 
-const empty = (input) => {
-  if (input === undefined || input === '') {
-    return true;
-  }
-};
-
-const generateUserToken = (username, id) => {
-  const token = jwt.sign(
+const generateUserToken = (username, id) =>
+  jwt.sign(
     {
       username,
-      user_id: id,
+      userId: id,
     },
-    SECRET,
-    { expiresIn: '3d' },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRATION_SECONDS, algorithm: JWT_ALGORITHM },
   );
-  return token;
-};
 
 module.exports = {
   isValidEmail,
   validatePassword,
   isEmpty,
-  empty,
   generateUserToken,
 };

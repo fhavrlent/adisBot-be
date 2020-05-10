@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const { pool } = require('./pool');
 
+const { ADMIN_USERNAME, ADMIN_PASSWORD } = process.env;
+console.log({ ADMIN_USERNAME, ADMIN_PASSWORD });
 pool.on('connect', () => {
   console.log('connected to the db');
 });
@@ -12,11 +14,11 @@ pool.on('connect', () => {
 const seedUsers = () => {
   const seedUserQuery = `
     INSERT INTO users 
-    VALUES ( default, $1, crypt($2, gen_salt('bf')) )
+    VALUES ( default, '$1', crypt('$2', gen_salt('bf')) )
     `;
 
   pool
-    .query(seedUserQuery, [process.env.ADMIN_USERNAME, process.env.ADMIN_PWD])
+    .query(seedUserQuery, [ADMIN_USERNAME, ADMIN_PASSWORD])
     .then((res) => {
       console.log(res);
       pool.end();

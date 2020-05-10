@@ -1,8 +1,10 @@
+require('dotenv').config();
+
 const Sentry = require('@sentry/node');
 
 const axios = require('../../axiosConfig');
 
-const { CHANNEL, TWITCH_ID } = process.env;
+const { CHANNEL, CHANNEL_ID } = process.env;
 
 const getViewers = async () => {
   try {
@@ -17,7 +19,7 @@ const getViewers = async () => {
 const getStreamData = async () => {
   try {
     return await axios.get(
-      `https://api.twitch.tv/helix/streams?user_id=${TWITCH_ID}`,
+      `https://api.twitch.tv/helix/streams?user_id=${CHANNEL_ID}`,
     );
   } catch (error) {
     Sentry.captureException(error);
