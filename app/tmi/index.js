@@ -1,10 +1,11 @@
 require('dotenv').config();
+
 const tmi = require('tmi.js');
 
 const { getCommand } = require('../controllers/commandsController');
 const { parseCommandResponse, isCommand, parseMessage } = require('./helpers');
 
-const { USERNAME, PASSWORD, CHANNEL } = process.env;
+const { BOT_USERNAME, BOT_PASSWORD, CHANNEL } = process.env;
 
 const client = new tmi.Client({
   options: { debug: true },
@@ -13,8 +14,8 @@ const client = new tmi.Client({
     secure: true,
   },
   identity: {
-    username: USERNAME,
-    password: PASSWORD,
+    username: BOT_USERNAME,
+    password: BOT_PASSWORD,
   },
   channels: [CHANNEL],
 });

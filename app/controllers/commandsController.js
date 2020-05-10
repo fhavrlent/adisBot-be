@@ -1,95 +1,99 @@
 const HttpStatus = require('http-status-codes');
-const Sentry = require('@sentry/node');
+const createError = require('http-errors');
 
 const dbQuery = require('../db/dbQuery');
 const { isEmpty } = require('../helpers/validation');
-const { errorMessage, successMessage } = require('../helpers/status');
 
-const createCommand = async (req, res) => {
-  const { command, response } = req.body;
-  if (command.startsWith('!')) {
-    command.slice(1, command.length);
-  }
-  if (isEmpty(command) || isEmpty(response)) {
-    errorMessage.error = 'Command and response field cannot be empty';
-    return res.status(HttpStatus.BAD_REQUEST).send(errorMessage);
-  }
-  const createCommandQuery = `
+const createCommand = async (req, res, next) => {
+  try {
+    const { command, response } = req.body;
+
+    if (isEmpty(command) || isEmpty(response)) {
+      throw createError(
+        HttpStatus.BAD_REQUEST,
+        'Command and response are required.',
+      );
+    }
+
+    if (command.startsWith('!')) {
+      command.slice(1, command.length);
+    }
+
+    const createCommandQuery = `
       INSERT INTO
       command(command, response)
       VALUES($1, $2)
       returning *
       `;
 
-  const values = [command, response];
+    const values = [command, response];
 
-  try {
     const { rows } = await dbQuery.query(createCommandQuery, values);
     const dbResponse = rows[0];
-    successMessage.data = dbResponse;
-    return res.status(HttpStatus.CREATED).send(successMessage);
+    return res.status(HttpStatus.CREATED).send(dbResponse);
   } catch (error) {
-    Sentry.captureException(error);
     if (error.routine === '_bt_check_unique') {
-      errorMessage.error = 'Command already exist';
-      return res.status(HttpStatus.CONFLICT).send(errorMessage);
+      next(createError(HttpStatus.CONFLICT, 'Command already exist.'));
     }
-    errorMessage.error = 'Operation was not successful';
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(errorMessage);
+    next(error);
   }
 };
 
-const deleteCommand = async (req, res) => {
-  const { commandId } = req.params;
+const deleteCommand = async (req, res, next) => {
+  try {
+    const { commandId } = req.params;
 
-  if (isEmpty(commandId)) {
-    errorMessage.error = 'No command selected';
-    return res.status(HttpStatus.BAD_REQUEST).send(errorMessage);
-  }
-  const deleteCommandQuery = `DELETE FROM
+    if (isEmpty(commandId)) {
+      throw createError(HttpStatus.BAD_REQUEST, 'No command selected');
+    }
+
+    const deleteCommandQuery = `
+      DELETE FROM
       command
-      WHERE id=$1`;
-  const values = [commandId];
+      WHERE id=$1
+      `;
+    const values = [commandId];
 
-  try {
     await dbQuery.query(deleteCommandQuery, values);
-    return res.status(HttpStatus.OK).send('Command deleted');
+    return res
+      .status(HttpStatus.OK)
+      .send({ status: HttpStatus.OK, message: 'Command deleted' });
   } catch (error) {
-    Sentry.captureException(error);
-    errorMessage.error = 'Operation was not successful';
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(errorMessage);
+    next(error);
   }
 };
 
-const getAllCommands = async (_, res) => {
-  const getAllCommandsQuery = `
-  SELECT * 
-  FROM command
-  ORDER BY isDefault DESC;
-  `;
-
+const getAllCommands = async (_, res, next) => {
   try {
+    const getAllCommandsQuery = `
+      SELECT * 
+      FROM command
+      ORDER BY isdefault DESC;
+    `;
+
+    //TODO change in db to is_default, add function to make camelCase
+
     const { rows } = await dbQuery.query(getAllCommandsQuery);
-    const dbResponse = rows;
-    if (!dbResponse[0]) {
-      errorMessage.error = 'There are no commands';
-      return res.status(HttpStatus.NOT_FOUND).send(errorMessage);
-    }
-    successMessage.data = dbResponse;
-    return res.status(HttpStatus.OK).send(successMessage);
+
+    return res.status(HttpStatus.OK).send(
+      rows.map((row) => ({
+        ...row,
+        isDefault: row.isdefault,
+        isdefault: undefined,
+      })),
+    );
   } catch (error) {
-    Sentry.captureException(error);
-    errorMessage.error = 'Operation was not successful';
-    return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(errorMessage);
+    next(error);
   }
 };
 
+// Internal
 const getCommand = async (command) => {
   const getCommandQuery = `
-      SELECT response
-      FROM command
-      WHERE command=$1;
-      `;
+    SELECT response
+    FROM command
+    WHERE command=$1;
+  `;
 
   const values = [command];
   try {
@@ -101,7 +105,7 @@ const getCommand = async (command) => {
 
     return dbResponse.response;
   } catch (error) {
-    Sentry.captureException(error);
+    console.log(error);
   }
 };
 
