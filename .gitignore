@@ -105,3 +105,5 @@ dist
 
 # PM2
 ecosystem.config.js
+
+seed.ts
