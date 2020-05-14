@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
 const HttpStatus = require('http-status-codes');
 
-const { generateUserToken } = require('../helpers/validation');
+const { generateUserToken } = require('../helpers/jtw');
 
-const { JWT_SECRET, JWT_EXPIRATION_SECONDS } = process.env;
+const { JWT_SECRET, JWT_EXPIRATION } = process.env;
 
 const refreshJwtToken = (req, res, next) => {
   try {
@@ -27,7 +27,7 @@ const refreshJwtToken = (req, res, next) => {
 
     res
       .cookie('Authorization', newToken, {
-        maxAge: JWT_EXPIRATION_SECONDS * 1000,
+        maxAge: JWT_EXPIRATION,
       })
       .send();
   } catch (error) {

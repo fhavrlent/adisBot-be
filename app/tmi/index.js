@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const tmi = require('tmi.js');
 
-const { getCommand } = require('../controllers/commandsController');
+const { getCommand } = require('../controllers/commands.controller');
 const { parseCommandResponse, isCommand, parseMessage } = require('./helpers');
 
 const { BOT_USERNAME, BOT_PASSWORD, CHANNEL } = process.env;
