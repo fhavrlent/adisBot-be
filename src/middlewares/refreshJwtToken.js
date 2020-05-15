@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const createError = require('http-errors');
 const HttpStatus = require('http-status-codes');
 
-const { generateUserToken } = require('../helpers/jtw');
+const { generateUserToken } = require('../../app/helpers/jtw');
 
 const { JWT_SECRET, JWT_EXPIRATION } = process.env;
 

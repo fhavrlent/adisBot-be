@@ -6,12 +6,12 @@ const nodemailer = require('nodemailer');
 const HttpStatusCodes = require('http-status-codes');
 
 const dbQuery = require('../db/dbQuery');
-const { isEmpty } = require('../helpers/validation');
+const { isEmpty } = require('../../app/helpers/validation');
 const {
   generateUserToken,
   generatePasswordResetToken,
   verifyPasswordResetToken,
-} = require('../helpers/jtw');
+} = require('../../app/helpers/jtw');
 
 const { JWT_EXPIRATION, BASE_FE_URL } = process.env;
 

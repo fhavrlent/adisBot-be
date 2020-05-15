@@ -1,9 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
+import Container from 'typedi';
+import mongoose from 'mongoose';
 
-import verifyToken from '../../../app/middlewares/verifyToken';
 import { celebrate, Joi } from 'celebrate';
-import config from '../../config';
-import cookieParser from 'cookie-parser';
+import { Command } from '../../models/command';
+import verifyToken from '../../middlewares/verifyToken';
 
 const router = Router();
 
@@ -21,7 +22,22 @@ export default (app: Router) => {
     verifyToken,
   );
 
-  /*   router.get('/commands', getAllCommands);
-  router.post('/commands', verifyToken, createCommand);
-  router.delete('/commands/:commandId', verifyToken, deleteCommand); */
+  router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+    const commandModel = Container.get('commandModel') as mongoose.Model<
+      Command & mongoose.Document
+    >;
+    const allCommands = await commandModel.find({});
+    res.send(allCommands);
+  });
+
+  router.post(
+    '/commands',
+    verifyToken,
+    async (req: Request, res: Response, next: NextFunction) => {},
+  );
+  router.delete(
+    '/commands/:commandId',
+    verifyToken,
+    async (req: Request, res: Response, next: NextFunction) => {},
+  );
 };

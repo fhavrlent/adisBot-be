@@ -7,8 +7,6 @@ import { krakenApi } from '../axiosConf';
 
 @Service()
 export default class ChannelService {
-  constructor(@Inject('logger') private logger) {}
-
   public async getChatters() {
     const {
       data: {
@@ -23,7 +21,7 @@ export default class ChannelService {
         },
       },
     } = await axios.get(
-      `https://tmi.twitch.tv/group/user/${config.channel}/chatters`,
+      `https://tmi.twitch.tv/group/user/${config.channelName}/chatters`,
     );
 
     return union(

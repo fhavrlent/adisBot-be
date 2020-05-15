@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import HttpStatus from 'http-status-codes';
-import cookieparser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 
 import routes from '../api';
@@ -21,17 +21,20 @@ export default ({ app }: { app: express.Application }) => {
    */
   app.enable('trust proxy');
   app.use(bodyParser.json());
-  app.use(config.api.prefix, routes());
   app.use(
     cors({
       origin: config.corsOrigin,
       credentials: true,
     }),
   );
-  app.use(cookieparser(config.cookieSecret));
-
+  app.use(cookieParser(config.cookieSecret));
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
+
+  /**
+   * Routes
+   */
+  app.use(config.api.prefix, routes());
 
   /**
    * Error Handlers

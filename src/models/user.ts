@@ -5,7 +5,6 @@ export type User = {
   name: string;
   email: string;
   password: string;
-  salt: string;
 };
 
 const User = new mongoose.Schema(
@@ -25,8 +24,6 @@ const User = new mongoose.Schema(
     },
 
     password: String,
-
-    salt: String,
   },
   { timestamps: true },
 );

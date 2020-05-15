@@ -104,9 +104,7 @@ const getCommand = async (command) => {
     }
 
     return dbResponse.response;
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };
 
 module.exports = { createCommand, deleteCommand, getAllCommands, getCommand };

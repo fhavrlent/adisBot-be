@@ -4,7 +4,6 @@ import { celebrate, Joi } from 'celebrate';
 import HttpStatus from 'http-status-codes';
 
 import AuthService from '../../services/auth';
-import MailService from '../../services/mail';
 
 const router = Router();
 
@@ -12,7 +11,7 @@ export default (app: Router) => {
   app.use('/auth', router);
 
   router.post(
-    '/signin',
+    '/login',
     celebrate({
       body: Joi.object({
         email: Joi.string().required(),
@@ -29,7 +28,7 @@ export default (app: Router) => {
         );
         return res
           .cookie('Authorization', token, {
-            maxAge: 3600,
+            maxAge: 3600000,
             httpOnly: true,
             secure: true,
             sameSite: true,
@@ -78,19 +77,13 @@ export default (app: Router) => {
       try {
         res.send({
           status: HttpStatus.OK,
-          message: 'If email exist in database, email was sent',
+          message: 'If email ex ist in database, email was sent',
         });
         const { email } = req.body;
-        const authServiceInstance = Container.get(AuthService);
-        const mailServiceInstance = Container.get(MailService);
-        const { token, user } = await authServiceInstance.SetPasswordResetToken(
-          email,
-        );
-        await mailServiceInstance.SendPasswordResetMail(user, token);
+        const authService = Container.get(AuthService);
+        await authService.SetPasswordResetToken(email);
       } catch (error) {}
     },
   );
-  /*   router.post('/refresh', refreshJwtToken);
-  router.post('/password-reset', requestUserResetPassword);
-  router.put('/password-reset/:userId/:token', resetUserPassword); */
+  //   router.post('/refresh', refreshJwtToken);
 };
