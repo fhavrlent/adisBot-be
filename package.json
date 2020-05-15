@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon",
     "build": "tsc",
+    "postbuild": "cp package.json dist/package.json && cd dist && npm install --only=production",
     "seed": "ts-node ./src/db/seed.ts"
   },
   "repository": {
