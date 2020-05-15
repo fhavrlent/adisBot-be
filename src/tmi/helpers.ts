@@ -22,14 +22,14 @@ const getCommandFromList = (command) => {
   return finalVariable;
 };
 
-const isCommand = (command) => command && command.startsWith('!');
+export const isCommand = (command) => command && command.startsWith('!');
 
-const parseMessage = (message) => message.toLowerCase();
+export const parseMessage = (message) => message.toLowerCase();
 
 const isValidVariable = (cmd) =>
   cmd && VALID_VARIABLES.includes(cmd.split('(')[0]);
 
-const parseCommandResponse = (response, tags) => {
+export const parseCommandResponse = (response, tags) => {
   if (!response.includes('${')) return response;
   const variableArr = response
     .match(/(\${.[^}]*})/g)
@@ -40,7 +40,7 @@ const parseCommandResponse = (response, tags) => {
     .filter((cmd) => isValidVariable(cmd))
     .map((cmd) => {
       const [command, ...params] = cmd.split('(');
-      const finalCmd = getCommandFromList(command);
+      const finalCmd = getCommandFromList(command) as any;
       if (!finalCmd) return;
       return finalCmd({
         args: [...params.join().replace(')', '').split(' ')],
@@ -49,10 +49,4 @@ const parseCommandResponse = (response, tags) => {
     })
     .map((res) => (result = result.replace(/(\${.[^}]*})/, res)));
   return result;
-};
-
-module.exports = {
-  parseCommandResponse,
-  isCommand,
-  parseMessage,
 };
