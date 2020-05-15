@@ -37,7 +37,6 @@ export default class ChannelService {
 
   public async isOnline() {
     const { data } = await krakenApi.get(`streams/${config.channelId}`);
-
-    return data && data.stream && typeof data.stream.stream_type === 'string';
+    return data?.stream?.stream_type === 'live';
   }
 }
