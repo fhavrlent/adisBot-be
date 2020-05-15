@@ -17,6 +17,8 @@ export default {
   channelName: process.env.CHANNEL_NAME,
   channelId: process.env.CHANNEL_ID,
   clientId: process.env.CLIENT_ID,
+  botUsername: process.env.BOT_USERNAME,
+  botPassword: process.env.BOT_PASSWORD,
 
   /**
    * Mongo
