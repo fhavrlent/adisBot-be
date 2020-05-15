@@ -38,6 +38,6 @@ export default class ChattersService {
 
   public async GetPointsOfChatter(name: string) {
     const viewer = await this.viewerModel.findOne({ name });
-    return viewer.points;
+    return viewer?.points || 0;
   }
 }
