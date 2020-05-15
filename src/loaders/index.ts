@@ -1,18 +1,17 @@
 import expressLoader from './express';
 import mongooseLoader from './mongoose';
 import dependencyInjector from './dependencyInjector';
-import tmiClient from '../tmi';
 
 export default async ({ expressApp }) => {
   const mongoConnection = await mongooseLoader();
 
-  const { agenda } = await dependencyInjector({
+  const { agenda, tmiInstance } = await dependencyInjector({
     mongoConnection,
   });
 
-  tmiClient.connect();
+  await agenda.start();
 
-  agenda.start();
+  await tmiInstance.connect();
 
-  await expressLoader({ app: expressApp });
+  expressLoader({ app: expressApp });
 };

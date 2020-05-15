@@ -1,24 +1,12 @@
-import Container, { Service, Inject } from 'typedi';
-import { randomBytes } from 'crypto';
-import jwt from 'jsonwebtoken';
-import argon2 from 'argon2';
+import { Service, Inject } from 'typedi';
 import { Model, Document } from 'mongoose';
-import isEmpty from 'lodash/isEmpty';
-import createError from 'http-errors';
-import HttpStatus from 'http-status-codes';
-import axios from 'axios';
-import union from 'lodash/union';
-
-import config from '../config';
-import MailService from './email';
-import { krakenApi } from '../axiosConf';
 import Agenda from 'agenda';
 
-type ViewerModel = Model<ViewerModel & Document>;
+export type ViewerModel = Model<ViewerModel & Document>;
 
 @Service()
 export default class ChattersService {
-  @Inject('viewerModel') private viewerModel: ViewerModel;
+  @Inject('viewerModel') private viewerModel;
   @Inject('logger') private logger;
   @Inject('agendaInstance') private agendaInstance: Agenda;
 
@@ -46,5 +34,10 @@ export default class ChattersService {
     chatters.map((name) => {
       this.agendaInstance.now('add points to chatter', { name, points: 5 });
     });
+  }
+
+  public async GetPointsOfChatter(name: string) {
+    const viewer = await this.viewerModel.findOne({ name });
+    return viewer.points;
   }
 }

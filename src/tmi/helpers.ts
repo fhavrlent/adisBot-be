@@ -1,4 +1,5 @@
-const VALID_VARIABLES = ['random.pick', 'random.range', 'user.name'];
+import Container from 'typedi';
+import ChattersService from '../services/chatter';
 
 const VARIABLES = {
   random: {
@@ -12,6 +13,11 @@ const VARIABLES = {
   },
   user: {
     name: ({ tags }) => tags['display-name'],
+    points: async ({ tags }) => {
+      const chatterService = Container.get(ChattersService);
+      const userPoints = await chatterService.GetPointsOfChatter(tags.username);
+      return userPoints;
+    },
   },
 };
 
@@ -26,27 +32,27 @@ export const isCommand = (command) => command && command.startsWith('!');
 
 export const parseMessage = (message) => message.toLowerCase();
 
-const isValidVariable = (cmd) =>
-  cmd && VALID_VARIABLES.includes(cmd.split('(')[0]);
-
-export const parseCommandResponse = (response, tags) => {
+export const parseCommandResponse = async (response, tags) => {
   if (!response.includes('${')) return response;
   const variableArr = response
     .match(/(\${.[^}]*})/g)
     .map((element) => element.split('}').join('').split('${').join(''));
-
   let result = response;
-  variableArr
-    .filter((cmd) => isValidVariable(cmd))
-    .map((cmd) => {
+  const arrWithResults = await Promise.all(
+    variableArr.map(async (cmd) => {
       const [command, ...params] = cmd.split('(');
       const finalCmd = getCommandFromList(command) as any;
       if (!finalCmd) return;
-      return finalCmd({
+      return await finalCmd({
         args: [...params.join().replace(')', '').split(' ')],
         tags,
       });
-    })
-    .map((res) => (result = result.replace(/(\${.[^}]*})/, res)));
+    }),
+  );
+  await Promise.all(
+    arrWithResults.map(async (res) => {
+      return await (result = result.replace(/(\${.[^}]*})/, res));
+    }),
+  );
   return result;
 };
