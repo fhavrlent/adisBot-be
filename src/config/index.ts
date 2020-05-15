@@ -66,4 +66,11 @@ export default {
   emailLogin: process.env.EMAIL_LOGIN,
   emailPassword: process.env.EMAIL_PASSWORD,
   mailSendFrom: process.env.EMAIL_SEND_FROM,
+
+  /**
+   * Default login
+   */
+
+  adminName: process.env.ADMIN_NAME,
+  adminEmail: process.env.ADMIN_EMAIL,
 };
