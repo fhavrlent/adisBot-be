@@ -1,12 +1,15 @@
 import { Router } from 'express';
-import commands from './routes/commands';
-import user from './routes/user';
+
 import auth from './routes/auth';
+import commands from './routes/commands';
 
 export default () => {
   const app = Router();
+
+  /**
+   * Routes
+   */
   auth(app);
-  user(app);
   commands(app);
 
   return app;

@@ -1,17 +1,16 @@
 import { Service, Inject } from 'typedi';
-import nodemailer, { Transporter } from 'nodemailer';
+import { Transporter } from 'nodemailer';
 
-import config from '../config';
 import { User } from '../models/user';
+import config from '../config';
 
 @Service()
 export default class MailService {
-  constructor(@Inject('emailClient') private emailClient: Transporter) {}
+  @Inject('emailClient') private emailClient: Transporter;
 
   public async SendPasswordResetMail(user: User, token: string) {
+    const url = `${config.baseFeUrl}/user/password-reset/${user._id}/${token}`;
     try {
-      const url = `${config.baseFeUrl}/user/password-reset/${user._id}/${token}`;
-
       const resetPasswordTemplate = {
         from: config.mailSendFrom,
         to: user.email,
@@ -24,8 +23,6 @@ export default class MailService {
         `,
       };
       await this.emailClient.sendMail(resetPasswordTemplate);
-
-      return;
     } catch (error) {}
   }
 }

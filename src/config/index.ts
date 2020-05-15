@@ -14,7 +14,7 @@ export default {
    * Twitch
    */
 
-  channel: process.env.CHANNEL,
+  channelName: process.env.CHANNEL_NAME,
   channelId: process.env.CHANNEL_ID,
   clientId: process.env.CLIENT_ID,
 
@@ -47,7 +47,7 @@ export default {
    * API configs
    */
   api: {
-    prefix: '/api',
+    prefix: '/api/v1',
   },
 
   /**
@@ -61,7 +61,7 @@ export default {
    * Mail data
    */
 
-  mailLogin: process.env.MAIL_LOGIN,
-  mailPassword: process.env.MAIL_LOGIN,
+  emailLogin: process.env.EMAIL_LOGIN,
+  emailPassword: process.env.EMAIL_PASSWORD,
   mailSendFrom: process.env.EMAIL_SEND_FROM,
 };

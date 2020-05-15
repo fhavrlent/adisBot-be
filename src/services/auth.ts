@@ -9,16 +9,14 @@ import HttpStatus from 'http-status-codes';
 
 import user, { User } from '../models/user';
 import config from '../config';
-import MailService from './mail';
+import MailService from './email';
+import Agenda from 'agenda';
 
 type UserModel = Model<User & Document>;
 
 @Service()
 export default class AuthService {
-  constructor(
-    @Inject('userModel') private userModel: UserModel,
-    @Inject('logger') private logger,
-  ) {}
+  @Inject('agendaInstance') private agendaInstance: Agenda;
 
   public async SignIn(
     email: string,
@@ -48,8 +46,10 @@ export default class AuthService {
       if (!userRecord) return;
 
       const token = this.generatePasswordResetToken(userRecord);
-
-      return { user: userRecord.toObject(), token };
+      this.agendaInstance.now('reset password mail', {
+        token,
+        user: userRecord,
+      });
     } catch (error) {
       return error;
     }

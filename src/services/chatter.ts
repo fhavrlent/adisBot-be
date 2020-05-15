@@ -10,35 +10,41 @@ import axios from 'axios';
 import union from 'lodash/union';
 
 import config from '../config';
-import MailService from './mail';
-import viewer, { Viewer } from '../models/viewer';
+import MailService from './email';
 import { krakenApi } from '../axiosConf';
+import Agenda from 'agenda';
 
-type ViewerModel = Model<Viewer & Document>;
+type ViewerModel = Model<ViewerModel & Document>;
 
 @Service()
 export default class ChattersService {
-  constructor(
-    @Inject('userModel') private viewerModel: ViewerModel,
-    @Inject('logger') private logger,
-  ) {}
+  @Inject('viewerModel') private viewerModel: ViewerModel;
+  @Inject('logger') private logger;
+  @Inject('agendaInstance') private agendaInstance: Agenda;
 
   public async AddPointsToChatter(name: string, pointsToAdd?: number) {
-    const viewerRecord = await (await viewer.findOne({ name }))?.toObject();
-
+    const viewerRecord = await (
+      await this.viewerModel.findOne({ name })
+    )?.toObject();
     const updatedRecord = {
       name: viewerRecord?.name || name,
       points: (viewerRecord?.points || 0) + pointsToAdd,
     };
-    return await viewer.findOneAndUpdate(
+    await this.viewerModel.findOneAndUpdate(
       { name },
       { points: updatedRecord.points },
       async (err, res) => {
         if (err) throw err;
         if (!res) {
-          await viewer.create(updatedRecord);
+          await this.viewerModel.create(updatedRecord);
         }
       },
     );
+  }
+
+  public async AddPointsToAllChatters(chatters) {
+    chatters.map((name) => {
+      this.agendaInstance.now('add points to chatter', { name, points: 5 });
+    });
   }
 }

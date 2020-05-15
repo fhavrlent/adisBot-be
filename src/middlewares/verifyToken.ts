@@ -2,14 +2,12 @@ import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
 import HttpStatus from 'http-status-codes';
 
-import config from '../../src/config';
-import { User } from '../../src/models/user';
+import config from '../config';
+import { User } from '../models/user';
 
 const verifyToken = async (req, res, next) => {
   try {
-    console.log(res.cookies);
     const token = req.cookies['Authorization'];
-    console.log(token);
     if (!token) {
       throw createError(
         HttpStatus.UNAUTHORIZED,
