@@ -17,7 +17,7 @@ module.exports = function (agenda) {
       }
       const allChatters = await channelService.getChatters();
 
-      await chatterService.AddPointsToAllChatters(allChatters);
+      await chatterService.AddPointsToAllChatters(allChatters, pointsToAdd);
 
       done();
     } catch (e) {

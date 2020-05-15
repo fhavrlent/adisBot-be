@@ -30,9 +30,12 @@ export default class ChattersService {
     );
   }
 
-  public async AddPointsToAllChatters(chatters) {
+  public async AddPointsToAllChatters(chatters, pointsToAdd) {
     chatters.map((name) => {
-      this.agendaInstance.now('add points to chatter', { name, points: 5 });
+      this.agendaInstance.now('add points to chatter', {
+        name,
+        points: pointsToAdd,
+      });
     });
   }
 
