@@ -7,6 +7,7 @@ module.exports = function (agenda) {
   agenda.define('add points to all chatters', async (job, done) => {
     const channelService = Container.get(ChannelService);
     const chatterService = Container.get(ChattersService);
+    const { pointsToAdd } = job.attrs.data;
 
     try {
       const isOnline = await channelService.isOnline();
@@ -15,7 +16,7 @@ module.exports = function (agenda) {
         return;
       }
       const allChatters = await channelService.getChatters();
-      viewer.updateMany({}, { points: +5 });
+
       await chatterService.AddPointsToAllChatters(allChatters);
 
       done();
