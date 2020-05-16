@@ -73,4 +73,10 @@ export default {
 
   adminName: process.env.ADMIN_NAME,
   adminEmail: process.env.ADMIN_EMAIL,
+
+  /**
+   * Streamelements
+   */
+
+  streamelementsBearer: process.env.STREAMELEMENTS_BEARER,
 };

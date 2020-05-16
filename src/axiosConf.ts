@@ -10,4 +10,11 @@ const krakenApi = axios.create({
   },
 });
 
-export { krakenApi };
+const kappaApi = axios.create({
+  baseURL: 'https://api.streamelements.com/kappa/v2/',
+  headers: {
+    Authorization: config.streamelementsBearer,
+  },
+});
+
+export { krakenApi, kappaApi };
