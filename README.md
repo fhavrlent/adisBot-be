@@ -1,4 +1,4 @@
-![Deploy Production](https://github.com/fhavrlent/adisBot-be/workflows/Deploy%20Production/badge.svg)
+[![Codeship Status for fhavrlent/adisBot-be](https://app.codeship.com/projects/a7bdd820-7aaa-0138-ae28-3a612af893dd/status?branch=master)](https://app.codeship.com/projects/396675)
 
 ```
 src
