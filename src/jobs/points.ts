@@ -4,27 +4,11 @@ import ChattersService from '../services/chatter';
 import viewer from '../models/viewer';
 
 module.exports = function (agenda) {
-  agenda.define('add points to all chatters', async (job, done) => {
-    const channelService = Container.get(ChannelService);
-    const chatterService = Container.get(ChattersService);
-    const { pointsToAdd } = job.attrs.data;
+  addPointsToAllChatters(agenda);
+  addPointsToChatter(agenda);
+};
 
-    try {
-      const isOnline = await channelService.isOnline();
-      if (!isOnline) {
-        done('Channel is offline');
-        return;
-      }
-      const allChatters = await channelService.getChatters();
-
-      await chatterService.AddPointsToAllChatters(allChatters, pointsToAdd);
-
-      done();
-    } catch (e) {
-      done(e);
-    }
-  });
-
+const addPointsToChatter = (agenda) =>
   agenda.define('add points to chatter', async (job, done) => {
     const chatterService = Container.get(ChattersService);
     const { name, points } = job.attrs.data;
@@ -36,4 +20,25 @@ module.exports = function (agenda) {
       done(e);
     }
   });
-};
+
+const addPointsToAllChatters = (agenda) =>
+  agenda.define('add points to all chatters', async (job, done) => {
+    const channelService = Container.get(ChannelService);
+    const chatterService = Container.get(ChattersService);
+    const { pointsToAdd } = job.attrs.data;
+
+    try {
+      const isOnline = await channelService.isOnline();
+      if (!isOnline) {
+        done();
+        return;
+      }
+      const allChatters = await channelService.getChatters();
+
+      await chatterService.AddPointsToAllChatters(allChatters, pointsToAdd);
+
+      done();
+    } catch (e) {
+      done(e);
+    }
+  });
