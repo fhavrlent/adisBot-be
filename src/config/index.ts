@@ -78,5 +78,6 @@ export default {
    * Streamelements
    */
 
-  streamelementsBearer: process.env.STREAMELEMENTS_BEARER,
+  streamelementsToken: process.env.STREAMELEMENTS_TOKEN,
+  streamelementsChannelId: process.env.STREAMELEMENTS_CHANNEL_ID,
 };

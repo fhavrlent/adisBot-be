@@ -13,7 +13,7 @@ const krakenApi = axios.create({
 const kappaApi = axios.create({
   baseURL: 'https://api.streamelements.com/kappa/v2/',
   headers: {
-    Authorization: config.streamelementsBearer,
+    Authorization: config.streamelementsToken,
   },
 });
 
