@@ -16,7 +16,12 @@ const VARIABLES = {
     points: async ({ tags }) => {
       const chatterService = Container.get(ChattersService);
       const userPoints = await chatterService.GetPointsOfChatter(tags.username);
+
       return userPoints;
+    },
+    vipPoints: async ({ tags }) => {
+      const chatterService = Container.get(ChattersService);
+      return await chatterService.GetVIPPoints(tags.username);
     },
   },
 };
