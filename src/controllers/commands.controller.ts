@@ -32,7 +32,9 @@ export const getKeyword = async (message: string) => {
 
     responses = await Promise.all(
       arrayOfWords.map(async (res) => {
-        const dbResponse = await commandModel.findOne({ keywords: res });
+        const dbResponse = await commandModel.findOne({
+          keywords: res.replace(/[^0-9a-z]/gi, ''),
+        });
 
         return dbResponse?.response;
       }),
