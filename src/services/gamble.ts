@@ -1,10 +1,8 @@
-import { Service, Inject } from 'typedi';
-
-import { User } from '../models/user';
+import { Service } from 'typedi';
 
 @Service()
 export default class GambleService {
-  public async GambleSlots(user: User, token: string) {
+  public async GambleSlots() {
     const slot1 = Math.floor(Math.random() * (5 - 1 + 1));
     const slot2 = Math.floor(Math.random() * (5 - 1 + 1));
     const slot3 = Math.floor(Math.random() * (5 - 1 + 1));

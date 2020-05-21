@@ -1,4 +1,3 @@
-import { Model, Document } from 'mongoose';
 import { Service, Inject } from 'typedi';
 import Agenda from 'agenda';
 
@@ -7,10 +6,8 @@ import config from '../config';
 
 @Service()
 export default class ChattersService {
-  constructor(
-    @Inject('viewerModel') private viewerModel,
-    @Inject('agendaInstance') private agendaInstance: Agenda,
-  ) {}
+  @Inject('viewerModel') private viewerModel;
+  @Inject('agendaInstance') private agendaInstance: Agenda;
 
   public async AddPointsToChatter(name: string, pointsToAdd?: number) {
     try {
@@ -31,7 +28,9 @@ export default class ChattersService {
           }
         },
       );
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public AddPointsToAllChatters(chatters, pointsToAdd) {
@@ -48,14 +47,21 @@ export default class ChattersService {
       const { data } = await kappaApi.get(
         `points/${config.streamelementsChannelId}/${name}`,
       );
-      return data.points;
-    } catch (error) {}
+
+      return data.points || 0;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   public async GetVIPPoints(name: string) {
     try {
+      console.log(name);
       const viewer = await this.viewerModel.findOne({ name });
+
       return viewer?.points || 0;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

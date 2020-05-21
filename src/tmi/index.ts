@@ -1,7 +1,7 @@
-import { parseMessage, isCommand, parseCommandResponse } from './helpers';
-import { getCommand } from '../controllers/commands.controller';
-import Container from 'typedi';
 import { Client } from 'tmi.js';
+
+import { parseMessage, isCommand, parseCommandResponse } from './helpers';
+import { getCommand, getKeyword } from '../controllers/commands.controller';
 
 export default async (tmiClient: Client) => {
   try {
@@ -17,14 +17,24 @@ export default async (tmiClient: Client) => {
         const commandResponse = await getCommand(
           values[0].slice(1, values[0].length),
         );
-        if (!commandResponse) return;
-        tmiClient.say(
-          channel,
-          await parseCommandResponse(commandResponse, tags),
-        );
+        if (commandResponse) {
+          tmiClient.say(
+            channel,
+            await parseCommandResponse(commandResponse, tags),
+          );
+        }
+      } else {
+        const keywordResponse = await getKeyword(message);
+        if (keywordResponse)
+          tmiClient.say(
+            channel,
+            await parseCommandResponse(keywordResponse, tags),
+          );
       }
     });
 
     return tmiClient;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };

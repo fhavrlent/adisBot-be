@@ -1,11 +1,11 @@
 import Container from 'typedi';
+
 import ChattersService from '../services/chatter';
+import SingleUserService from '../services/singleUser';
 
 const VARIABLES = {
   random: {
-    pick: ({ args }) => {
-      return args[Math.floor(Math.random() * args.length)];
-    },
+    pick: ({ args }) => args[Math.floor(Math.random() * args.length)],
     range: ({ args: [min, max] }) =>
       Math.floor(
         Math.random() * (parseInt(max) - parseInt(min) + 1) + parseInt(min),
@@ -13,16 +13,12 @@ const VARIABLES = {
   },
   user: {
     name: ({ tags }) => tags['display-name'],
-    points: async ({ tags }) => {
-      const chatterService = Container.get(ChattersService);
-      const userPoints = await chatterService.GetPointsOfChatter(tags.username);
-
-      return userPoints;
-    },
-    vipPoints: async ({ tags }) => {
-      const chatterService = Container.get(ChattersService);
-      return await chatterService.GetVIPPoints(tags.username);
-    },
+    points: async ({ tags }) =>
+      await Container.get(ChattersService).GetPointsOfChatter(tags.username),
+    vipPoints: async ({ tags }) =>
+      await Container.get(ChattersService).GetVIPPoints(tags.username),
+    rank: async ({ tags }) =>
+      await Container.get(SingleUserService).GetUserRank(tags.username),
   },
 };
 
@@ -30,6 +26,7 @@ const getCommandFromList = (command) => {
   const commandArr = command.split('.');
   let finalVariable = { ...VARIABLES };
   commandArr.map((cmd) => (finalVariable = finalVariable[cmd]));
+
   return finalVariable;
 };
 
@@ -48,6 +45,7 @@ export const parseCommandResponse = async (response, tags) => {
       const [command, ...params] = cmd.split('(');
       const finalCmd = getCommandFromList(command) as any;
       if (!finalCmd) return;
+
       return await finalCmd({
         args: [...params.join().replace(')', '').split(' ')],
         tags,
@@ -59,5 +57,6 @@ export const parseCommandResponse = async (response, tags) => {
       return await (result = result.replace(/(\${.[^}]*})/, res));
     }),
   );
+
   return result;
 };
