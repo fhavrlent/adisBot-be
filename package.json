@@ -1,6 +1,6 @@
 {
   "name": "adisbot-be",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -59,10 +59,11 @@
     "winston-transport-sentry-node": "^0.3.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^7.0.0",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.1",
-    "tslint": "^6.1.2",
     "typescript": "^3.9.2"
   }
 }

@@ -1,6 +1,5 @@
 import Container from 'typedi';
-import { Transporter } from 'nodemailer';
-import config from '../config';
+
 import MailService from '../services/email';
 
 module.exports = function (agenda) {
