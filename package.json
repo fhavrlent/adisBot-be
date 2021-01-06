@@ -33,7 +33,7 @@
     "agenda": "^3.1.0",
     "agendash": "^1.0.0",
     "argon2": "^0.26.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "celebrate": "^12.1.1",
     "cookie-parser": "^1.4.5",
